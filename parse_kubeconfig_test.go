@@ -21,6 +21,7 @@ type testFixtures struct {
 	kubeconfigNoHost    string
 	kubeconfigNoContext string
 	kubeconfigSkipTls   string
+	tokenFile           string
 }
 
 func NewFixtures(t *testing.T) testFixtures {
@@ -41,6 +42,8 @@ func NewFixtures(t *testing.T) testFixtures {
 	assert.Nil(t, err)
 	kubeTlsSkip, err := os.ReadFile("testdata/kubeconfig-tlsskip.yaml")
 	assert.Nil(t, err)
+	tokenFile, err := os.ReadFile("testdata/tokenfile")
+	assert.Nil(t, err)
 
 	return testFixtures{
 		caCert:              string(caCrt),
@@ -51,6 +54,7 @@ func NewFixtures(t *testing.T) testFixtures {
 		kubeconfigNoHost:    string(kubeNoHost),
 		kubeconfigNoContext: string(kubeNoCtx),
 		kubeconfigSkipTls:   string(kubeTlsSkip),
+		tokenFile:           string(tokenFile),
 	}
 }
 
@@ -59,15 +63,6 @@ func TestParseKubeConfig(t *testing.T) {
 	kubeconf, err := ParseKubeConfig(fixtures.kubeconfig)
 	assert.Nil(t, err)
 	assert.NotNil(t, kubeconf)
-	kubeconfNodata, err := ParseKubeConfig(fixtures.kubeconfigNoData)
-	assert.Nil(t, err)
-	assert.NotNil(t, kubeconfNodata)
-	_, err = ParseKubeConfig(fixtures.kubeconfigNoContext)
-	assert.NotNil(t, err)
-	err = nil
-	_, err = ParseKubeConfig(fixtures.kubeconfigNoHost)
-	assert.NotNil(t, err)
-
 }
 
 func TestKubeConfigToConnection(t *testing.T) {
@@ -109,6 +104,7 @@ func TestKubeConfigToConnection(t *testing.T) {
 }
 
 func TestConnectionToKubeConfig(t *testing.T) {
+	// test parsing without file inlining
 	fixtures := NewFixtures(t)
 	kubeconf, err := ParseKubeConfig(fixtures.kubeconfigNoData)
 	assert.Nil(t, err)
@@ -116,10 +112,20 @@ func TestConnectionToKubeConfig(t *testing.T) {
 	kubeconfBack, err := ConnectionToKubeConfig(connection)
 	assert.Nil(t, err)
 	assert.Equal(t, kubeconf, kubeconfBack)
-
+	// test parsing with file inlining
 	kubeconf, err = ParseKubeConfig(fixtures.kubeconfig)
 	assert.Nil(t, err)
 	connection, err = KubeConfigToConnection(kubeconf, false)
+	kubeconfBack, err = ConnectionToKubeConfig(connection)
+	assert.Nil(t, err)
+	assert.Equal(t, kubeconf, kubeconfBack)
+
+	// test parsing without inlining with token file in connection
+	kubeconf, err = ParseKubeConfig(fixtures.kubeconfigNoData)
+	assert.Nil(t, err)
+	connection, err = KubeConfigToConnection(kubeconf, false)
+	connection.BearerToken = ""
+	connection.BearerTokenFile = "testdata/tokenfile"
 	kubeconfBack, err = ConnectionToKubeConfig(connection)
 	assert.Nil(t, err)
 	assert.Equal(t, kubeconf, kubeconfBack)

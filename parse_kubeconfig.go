@@ -169,7 +169,7 @@ func ConnectionToKubeConfig(connection ConnectionParameters) (KubeConfig, error)
 	userParams := KubeConfigUserParameters{}
 	userParams.Username = &connection.Username
 	userParams.Password = &connection.Password
-	userParams.Token = &connection.BearerToken
+
 	if len(connection.KeyData) > 0 {
 		keyData := base64.StdEncoding.EncodeToString([]byte(connection.KeyData))
 		userParams.ClientKeyData = &keyData
@@ -184,6 +184,20 @@ func ConnectionToKubeConfig(connection ConnectionParameters) (KubeConfig, error)
 	if len(connection.CertFile) > 0 {
 		userParams.ClientCertificate = &connection.CertFile
 	}
+
+	if len(connection.BearerToken) > 0 {
+		userParams.Token = &connection.BearerToken
+	}
+
+	if len(connection.BearerTokenFile) > 0 {
+		tokenData, err := os.ReadFile(connection.BearerTokenFile)
+		if err != nil {
+			return KubeConfig{}, err
+		}
+		token := string(tokenData)
+		userParams.Token = &token
+	}
+
 	user := KubeConfigUser{
 		User: userParams,
 		Name: connection.Username,
@@ -230,6 +244,9 @@ func Client(connection ConnectionParameters) (*kubernetes.Clientset, error) {
 	}
 	if len(connection.BearerToken) > 0 {
 		config.BearerToken = connection.BearerToken
+	}
+	if len(connection.BearerTokenFile) > 0 {
+		config.BearerTokenFile = connection.BearerTokenFile
 	}
 
 	clientSet, err := kubernetes.NewForConfig(&config)
