@@ -217,46 +217,7 @@ func ConnectionToKubeConfig(connection ConnectionParameters) (KubeConfig, error)
 
 }
 
-func Client(connection ConnectionParameters) (*kubernetes.Clientset, error) {
-	config := restclient.Config{}
-	if len(connection.Host) == 0 {
-		return nil, errors.New("no cluster host found in connection")
-	}
-	config.Host = connection.Host
-
-	if len(connection.CertData) > 0 {
-		config.CertData = []byte(connection.CertData)
-	}
-	if len(connection.CertFile) > 0 {
-		config.CertFile = connection.CertFile
-	}
-	if len(connection.KeyData) > 0 {
-		config.KeyData = []byte(connection.KeyData)
-	}
-	if len(connection.KeyFile) > 0 {
-		config.KeyFile = connection.KeyFile
-	}
-	if len(connection.Username) > 0 {
-		config.Username = connection.Username
-	}
-	if len(connection.Password) > 0 {
-		config.Password = connection.Password
-	}
-	if len(connection.BearerToken) > 0 {
-		config.BearerToken = connection.BearerToken
-	}
-	if len(connection.BearerTokenFile) > 0 {
-		config.BearerTokenFile = connection.BearerTokenFile
-	}
-
-	clientSet, err := kubernetes.NewForConfig(&config)
-	if err != nil {
-		return nil, err
-	}
-	return clientSet, nil
-}
-
-func RESTClient(connection ConnectionParameters) (*restclient.RESTClient, error) {
+func ConnectionToRestConfig(connection ConnectionParameters) (*restclient.Config, error) {
 	const defaultTimeOut = 10 * time.Second
 
 	if len(connection.Host) == 0 {
@@ -288,8 +249,27 @@ func RESTClient(connection ConnectionParameters) (*restclient.RESTClient, error)
 		Burst:     restclient.DefaultBurst,
 		Timeout:   defaultTimeOut,
 	}
+	return &clientConfig, nil
+}
 
-	client, err := restclient.RESTClientFor(&clientConfig)
+func Client(connection ConnectionParameters) (*kubernetes.Clientset, error) {
+	config, err := ConnectionToRestConfig(connection)
+	if err != nil {
+		return nil, err
+	}
+	clientSet, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+	return clientSet, nil
+}
+
+func RESTClient(connection ConnectionParameters) (*restclient.RESTClient, error) {
+	clientConfig, err := ConnectionToRestConfig(connection)
+	if err != nil {
+		return nil, err
+	}
+	client, err := restclient.RESTClientFor(clientConfig)
 	if err != nil {
 		return nil, err
 	}
