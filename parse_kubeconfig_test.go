@@ -13,15 +13,16 @@ const (
 )
 
 type testFixtures struct {
-	caCert              string
-	clientCrt           string
-	clientKey           string
-	kubeconfig          string
-	kubeconfigNoData    string
-	kubeconfigNoHost    string
-	kubeconfigNoContext string
-	kubeconfigSkipTls   string
-	tokenFile           string
+	caCert               string
+	clientCrt            string
+	clientKey            string
+	kubeconfig           string
+	kubeconfigNoData     string
+	kubeconfigNoHost     string
+	kubeconfigNoContext  string
+	kubeconfigSkipTls    string
+	tokenFile            string
+	kubeconfigExtensions string
 }
 
 func NewFixtures(t *testing.T) testFixtures {
@@ -44,17 +45,20 @@ func NewFixtures(t *testing.T) testFixtures {
 	assert.Nil(t, err)
 	tokenFile, err := os.ReadFile("testdata/tokenfile")
 	assert.Nil(t, err)
+	kubeExtensions, err := os.ReadFile("testdata/kubeconfig-extensions.yaml")
+	assert.Nil(t, err)
 
 	return testFixtures{
-		caCert:              string(caCrt),
-		clientCrt:           string(clientCrt),
-		clientKey:           string(clientKey),
-		kubeconfig:          string(kube),
-		kubeconfigNoData:    string(kubeNodata),
-		kubeconfigNoHost:    string(kubeNoHost),
-		kubeconfigNoContext: string(kubeNoCtx),
-		kubeconfigSkipTls:   string(kubeTlsSkip),
-		tokenFile:           string(tokenFile),
+		caCert:               string(caCrt),
+		clientCrt:            string(clientCrt),
+		clientKey:            string(clientKey),
+		kubeconfig:           string(kube),
+		kubeconfigNoData:     string(kubeNodata),
+		kubeconfigNoHost:     string(kubeNoHost),
+		kubeconfigNoContext:  string(kubeNoCtx),
+		kubeconfigSkipTls:    string(kubeTlsSkip),
+		tokenFile:            string(tokenFile),
+		kubeconfigExtensions: string(kubeExtensions),
 	}
 }
 
@@ -63,6 +67,10 @@ func TestParseKubeConfig(t *testing.T) {
 	kubeconf, err := ParseKubeConfig(fixtures.kubeconfig)
 	assert.Nil(t, err)
 	assert.NotNil(t, kubeconf)
+
+	kubeconfExtensions, err := ParseKubeConfig(fixtures.kubeconfigExtensions)
+	assert.Nil(t, err)
+	assert.NotNil(t, kubeconfExtensions)
 }
 
 func TestKubeConfigToConnection(t *testing.T) {

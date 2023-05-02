@@ -21,6 +21,7 @@ type KubeConfigClusterParams struct {
 	CertificateAuthority     *string `json:"certificate-authority"`
 	CertificateAuthorityData *string `json:"certificate-authority-data"`
 	InsecureSkipTLSVerify    bool    `json:"insecure-skip-tls-verify"`
+	Extensions               any     `json:"extensions"`
 }
 
 type KubeConfigCluster struct {
@@ -29,9 +30,10 @@ type KubeConfigCluster struct {
 }
 
 type KubeConfigContextParameters struct {
-	Cluster   string `json:"cluster"`
-	User      string `json:"user"`
-	Namespace string `json:"namespace"`
+	Cluster    string `json:"cluster"`
+	User       string `json:"user"`
+	Namespace  string `json:"namespace"`
+	Extensions any    `json:"extensions"`
 }
 
 type KubeConfigContext struct {
@@ -303,6 +305,21 @@ var clusterParamsSchema = schema.NewTypedObject[KubeConfigClusterParams](
 			nil,
 			nil,
 		).TreatEmptyAsDefaultValue(),
+		"extensions": schema.NewPropertySchema(
+			schema.NewAnySchema(),
+			schema.NewDisplayValue(
+				schema.PointerTo("Extensions"),
+				schema.PointerTo("minikube kube config section "+
+					"introduced to avoid local tests issues"),
+				nil,
+			),
+			false,
+			nil,
+			nil,
+			nil,
+			nil,
+			nil,
+		),
 	},
 )
 
@@ -384,6 +401,21 @@ var contextParamsSchema = schema.NewTypedObject[KubeConfigContextParameters](
 			nil,
 			nil,
 		).TreatEmptyAsDefaultValue(),
+		"extensions": schema.NewPropertySchema(
+			schema.NewAnySchema(),
+			schema.NewDisplayValue(
+				schema.PointerTo("Extensions"),
+				schema.PointerTo("minikube kube config section "+
+					"introduced to avoid local tests issues"),
+				nil,
+			),
+			false,
+			nil,
+			nil,
+			nil,
+			nil,
+			nil,
+		),
 	},
 )
 

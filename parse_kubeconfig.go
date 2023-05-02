@@ -210,7 +210,7 @@ func ConnectionToKubeConfig(connection ConnectionParameters) (KubeConfig, error)
 		Contexts:       []KubeConfigContext{context},
 		Users:          []KubeConfigUser{user},
 		CurrentContext: &defaultStr,
-		Preferences:    map[string]interface{}{}, //default type in sdk parser, used to compare the struct in unit tests
+		Preferences:    map[interface{}]interface{}{}, //default type in sdk parser, used to compare the struct in unit tests
 	}
 
 	return kubeconfig, nil
