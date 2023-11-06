@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/stretchr/testify v1.8.4
 	go.arcalot.io/lang v1.0.0
-	go.flow.arcalot.io/pluginsdk v0.4.1
+	go.flow.arcalot.io/pluginsdk v0.5.1
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.28.2
 	k8s.io/client-go v0.28.2
