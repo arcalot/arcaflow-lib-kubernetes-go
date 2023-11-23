@@ -28,6 +28,7 @@ type ConnectionParameters struct {
 
 	BearerToken     string `json:"bearerToken"`
 	BearerTokenFile string `json:"bearerTokenFile"`
+	Insecure        bool   `json:"insecure"`
 }
 
 // UnmarshalJSON uses the Arcaflow schema system to unmarshal JSON data when called via json.Unmarshal on the
@@ -266,6 +267,20 @@ var connectionParametersSchema = schema.NewTypedObject[ConnectionParameters](
 			nil,
 			nil,
 			schema.PointerTo(util.JSONEncode("/var/run/secrets/kubernetes.io/serviceaccount")),
+			nil,
+		),
+		"insecure": schema.NewPropertySchema(
+			schema.NewBoolSchema(),
+			schema.NewDisplayValue(
+				schema.PointerTo("Insecure connection"),
+				schema.PointerTo("Skip TLS verification"),
+				nil,
+			),
+			false,
+			nil,
+			nil,
+			nil,
+			nil,
 			nil,
 		),
 	},

@@ -61,12 +61,6 @@ func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (Connection
 		return ConnectionParameters{}, fmt.Errorf("current user %s not found in kubeconfig file", currentUser)
 	}
 
-	if cluster.Cluster.InsecureSkipTLSVerify {
-		return ConnectionParameters{}, errors.New("the Kubeconfig is set to skip TLS verification" +
-			"this is not supported by arcaflow and there is no reason to use this option" +
-			"please set up your kubernetes TLS authentication with CA certificates.")
-	}
-
 	if len(cluster.Cluster.Server) == 0 {
 		return ConnectionParameters{}, errors.New("no cluster host found in connection")
 	}
@@ -86,6 +80,8 @@ func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (Connection
 			connectionParams.CAFile = *cluster.Cluster.CertificateAuthority
 		}
 	}
+
+	connectionParams.Insecure = cluster.Cluster.InsecureSkipTLSVerify
 
 	if cluster.Cluster.CertificateAuthorityData != nil {
 		connectionParams.CAData = util.Base64Decode(*cluster.Cluster.CertificateAuthorityData)
@@ -152,6 +148,7 @@ func ConnectionToKubeConfig(connection ConnectionParameters) (KubeConfig, error)
 	if len(connection.CAFile) > 0 {
 		clusterParams.CertificateAuthority = &connection.CAFile
 	}
+	clusterParams.InsecureSkipTLSVerify = connection.Insecure
 	cluster := KubeConfigCluster{
 		Cluster: clusterParams,
 		Name:    defaultStr,
@@ -243,6 +240,7 @@ func ConnectionToRestConfig(connection ConnectionParameters) (*restclient.Config
 			KeyFile:    connection.KeyFile,
 			CAData:     []byte(connection.CAData),
 			CAFile:     connection.CAFile,
+			Insecure:   connection.Insecure,
 		},
 		UserAgent: "Arcaflow",
 		QPS:       restclient.DefaultQPS,
