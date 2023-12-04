@@ -84,6 +84,8 @@ func TestKubeConfigToConnection(t *testing.T) {
 	assert.Equal(t, connection.KeyData, fixtures.clientKey)
 	assert.Equal(t, connection.CAData, fixtures.caCert)
 	assert.Equal(t, connection.CertData, fixtures.clientCrt)
+	// test that by default insecure-skip-tls-verify is false
+	assert.False(t, connection.Insecure)
 
 	//test without inlining
 	kubeconf, err = ParseKubeConfig(fixtures.kubeconfigNoData)
@@ -105,10 +107,11 @@ func TestKubeConfigToConnection(t *testing.T) {
 	assert.NotNil(t, err)
 	err = nil
 
-	//test failure on insecure-skip-tls-verify: true
+	//test success on insecure-skip-tls-verify: true
 	kubeconf, err = ParseKubeConfig(fixtures.kubeconfigSkipTls)
 	connection, err = KubeConfigToConnection(kubeconf, true)
-	assert.NotNil(t, err)
+	assert.True(t, connection.Insecure)
+	assert.Nil(t, err)
 }
 
 func TestConnectionToKubeConfig(t *testing.T) {

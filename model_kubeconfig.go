@@ -292,7 +292,7 @@ var clusterParamsSchema = schema.NewTypedObject[KubeConfigClusterParams](
 			nil,
 		).TreatEmptyAsDefaultValue(),
 		"insecure-skip-tls-verify": schema.NewPropertySchema(
-			schema.NewStringSchema(schema.IntPointer(1), nil, nil),
+			schema.NewBoolSchema(),
 			schema.NewDisplayValue(
 				schema.PointerTo("InsecureSkipTLSVerify"),
 				schema.PointerTo("toggles TLS verification"),
