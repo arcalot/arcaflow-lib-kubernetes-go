@@ -64,7 +64,7 @@ func (c *ConnectionParameters) UnmarshalYAML(unmarshaller func(interface{}) erro
 	if err != nil {
 		return fmt.Errorf("failed to unserialize data (%w)", err)
 	}
-	c = &unserializedData
+	*c = unserializedData
 	return nil
 }
 
