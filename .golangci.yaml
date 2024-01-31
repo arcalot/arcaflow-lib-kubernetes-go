@@ -71,6 +71,8 @@ linters-settings:
     rules:
       main:
         list-mode: strict
+        files:
+          - "**/internal/*.go"
         allow:
           - $gostd
           - go.flow.arcalot.io/
