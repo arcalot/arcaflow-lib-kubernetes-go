@@ -23,7 +23,7 @@ func ParseKubeConfig(data string) (KubeConfig, error) {
 	return kubeconfig, nil
 }
 
-func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (ConnectionParameters, error) {
+func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (ConnectionParameters, error) { //nolint:funlen
 	if kubeconfig.CurrentContext == nil {
 		return ConnectionParameters{}, errors.New("unusable KubeConfig: no current context is set")
 	}
@@ -207,7 +207,7 @@ func ConnectionToKubeConfig(connection ConnectionParameters) (KubeConfig, error)
 		Contexts:       []KubeConfigContext{context},
 		Users:          []KubeConfigUser{user},
 		CurrentContext: &defaultStr,
-		Preferences:    map[interface{}]interface{}{}, //default type in sdk parser, used to compare the struct in unit tests
+		Preferences:    map[interface{}]interface{}{}, // default type in sdk parser, used to compare the struct in unit tests
 	}
 
 	return kubeconfig, nil
