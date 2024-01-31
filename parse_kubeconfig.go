@@ -23,7 +23,7 @@ func ParseKubeConfig(data string) (KubeConfig, error) {
 	return kubeconfig, nil
 }
 
-func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (ConnectionParameters, error) { //nolint:funlen,gocognit
+func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (ConnectionParameters, error) {
 	if kubeconfig.CurrentContext == nil {
 		return ConnectionParameters{}, errors.New("unusable KubeConfig: no current context is set")
 	}
@@ -134,7 +134,7 @@ func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (Connection
 	return connectionParams, nil
 }
 
-func ConnectionToKubeConfig(connection ConnectionParameters) (KubeConfig, error) { //nolint:funlen
+func ConnectionToKubeConfig(connection ConnectionParameters) (KubeConfig, error) {
 	defaultStr := "default"
 	clusterParams := KubeConfigClusterParams{}
 	if len(connection.Host) == 0 {

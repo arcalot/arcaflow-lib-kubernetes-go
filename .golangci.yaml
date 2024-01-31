@@ -35,8 +35,6 @@ linters:
     - godox
     # Keep the cyclomatic complexity of functions to a reasonable level.
     - gocyclo
-    # Complain about cognitive complexity of functions.
-    - gocognit
     # Find repeated strings that could be converted into constants.
     - goconst
     # Complain about unnecessary type conversions.
@@ -52,9 +50,6 @@ linters:
     - dupl
     # Check for pointers in loops. This is a typical bug source.
     - exportloopref
-    # Enforce a reasonable function length of 60 lines or 40 instructions. In very rare cases you may want to disable
-    # this with // nolint:funlen if there is absolutely no way to split the function in question.
-    - funlen
     # Prevent dogsledding (mass-ignoring return values). This typically indicates missing error handling.
     - dogsled
     # Enforce consistent import aliases across all files.
