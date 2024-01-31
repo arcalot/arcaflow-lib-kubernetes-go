@@ -98,16 +98,22 @@ func TestKubeConfigToConnection(t *testing.T) {
 
 	// test failure on empty host
 	kubeconf, err = ParseKubeConfig(fixtures.kubeconfigNoHost)
+	assert.NoError(t, err)
+	assert.NotNil(t, kubeconf)
 	connection, err = KubeConfigToConnection(kubeconf, true)
 	assert.NotNil(t, err)
 
 	// test failure on empty default context
 	kubeconf, err = ParseKubeConfig(fixtures.kubeconfigNoContext)
+	assert.NoError(t, err)
+	assert.NotNil(t, kubeconf)
 	connection, err = KubeConfigToConnection(kubeconf, true)
 	assert.NotNil(t, err)
 
 	// test success on insecure-skip-tls-verify: true
 	kubeconf, err = ParseKubeConfig(fixtures.kubeconfigSkipTLS)
+	assert.NoError(t, err)
+	assert.NotNil(t, kubeconf)
 	connection, err = KubeConfigToConnection(kubeconf, true)
 	assert.True(t, connection.Insecure)
 	assert.Nil(t, err)
@@ -119,6 +125,7 @@ func TestConnectionToKubeConfig(t *testing.T) {
 	kubeconf, err := ParseKubeConfig(fixtures.kubeconfigNoData)
 	assert.Nil(t, err)
 	connection, err := KubeConfigToConnection(kubeconf, false)
+	assert.NoError(t, err)
 	kubeconfBack, err := ConnectionToKubeConfig(connection)
 	assert.Nil(t, err)
 	assert.Equal(t, kubeconf, kubeconfBack)
@@ -126,6 +133,7 @@ func TestConnectionToKubeConfig(t *testing.T) {
 	kubeconf, err = ParseKubeConfig(fixtures.kubeconfig)
 	assert.Nil(t, err)
 	connection, err = KubeConfigToConnection(kubeconf, false)
+	assert.NoError(t, err)
 	kubeconfBack, err = ConnectionToKubeConfig(connection)
 	assert.Nil(t, err)
 	assert.Equal(t, kubeconf, kubeconfBack)
@@ -134,6 +142,7 @@ func TestConnectionToKubeConfig(t *testing.T) {
 	kubeconf, err = ParseKubeConfig(fixtures.kubeconfigNoData)
 	assert.Nil(t, err)
 	connection, err = KubeConfigToConnection(kubeconf, false)
+	assert.NoError(t, err)
 	connection.BearerToken = ""
 	connection.BearerTokenFile = "testdata/tokenfile"
 	kubeconfBack, err = ConnectionToKubeConfig(connection)
