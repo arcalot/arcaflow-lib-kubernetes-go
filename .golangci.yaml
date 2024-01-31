@@ -62,8 +62,6 @@ linters:
     - prealloc
     # Check for improper duration handling.
     - durationcheck
-    # Enforce tests being in the _test package.
-    - testpackage
 
     # endregion
 linters-settings:

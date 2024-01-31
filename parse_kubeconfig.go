@@ -29,8 +29,9 @@ func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (Connection
 	}
 	var context *KubeConfigContext
 	for _, ctx := range kubeconfig.Contexts {
-		if ctx.Name == *kubeconfig.CurrentContext {
-			context = &ctx
+		ctxLocal := ctx
+		if ctxLocal.Name == *kubeconfig.CurrentContext {
+			context = &ctxLocal
 		}
 	}
 	if context == nil {
@@ -42,8 +43,9 @@ func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (Connection
 	var cluster *KubeConfigCluster
 
 	for _, clstr := range kubeconfig.Clusters {
-		if clstr.Name == currentCluster {
-			cluster = &clstr
+		clstrLocal := clstr
+		if clstrLocal.Name == currentCluster {
+			cluster = &clstrLocal
 		}
 	}
 	if cluster == nil {
@@ -52,8 +54,9 @@ func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (Connection
 
 	var user *KubeConfigUser
 	for _, usr := range kubeconfig.Users {
-		if usr.Name == currentUser {
-			user = &usr
+		usrLocal := usr
+		if usrLocal.Name == currentUser {
+			user = &usrLocal
 		}
 	}
 
