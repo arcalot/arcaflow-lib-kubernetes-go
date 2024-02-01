@@ -60,11 +60,11 @@ func (c *ConnectionParameters) UnmarshalYAML(unmarshaller func(interface{}) erro
 	if err := unmarshaller(&temp); err != nil {
 		return fmt.Errorf("failed to JSON unmarshal data (%w)", err)
 	}
-	unserializedData, err := connectionParametersSchema.UnserializeType(temp) //nolint:ineffassign
+	unserializedData, err := connectionParametersSchema.UnserializeType(temp) //nolint:all
 	if err != nil {
 		return fmt.Errorf("failed to unserialize data (%w)", err)
 	}
-	c = &unserializedData //nolint:staticcheck
+	c = &unserializedData //nolint:all
 	return nil
 }
 
