@@ -16,7 +16,7 @@ import (
 )
 
 func ParseKubeConfig(data string) (KubeConfig, error) {
-	var kubeconfig KubeConfig = KubeConfig{}
+	var kubeconfig = KubeConfig{}
 	if err := yaml.Unmarshal([]byte(data), &kubeconfig); err != nil {
 		return kubeconfig, err
 	}
@@ -30,7 +30,8 @@ func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (Connection
 	var context *KubeConfigContext
 	for _, ctx := range kubeconfig.Contexts {
 		if ctx.Name == *kubeconfig.CurrentContext {
-			context = &ctx
+			ctxLocal := ctx
+			context = &ctxLocal
 		}
 	}
 	if context == nil {
@@ -43,7 +44,8 @@ func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (Connection
 
 	for _, clstr := range kubeconfig.Clusters {
 		if clstr.Name == currentCluster {
-			cluster = &clstr
+			clstrLocal := clstr
+			cluster = &clstrLocal
 		}
 	}
 	if cluster == nil {
@@ -53,7 +55,8 @@ func KubeConfigToConnection(kubeconfig KubeConfig, inlineFiles bool) (Connection
 	var user *KubeConfigUser
 	for _, usr := range kubeconfig.Users {
 		if usr.Name == currentUser {
-			user = &usr
+			usrLocal := usr
+			user = &usrLocal
 		}
 	}
 
@@ -207,7 +210,7 @@ func ConnectionToKubeConfig(connection ConnectionParameters) (KubeConfig, error)
 		Contexts:       []KubeConfigContext{context},
 		Users:          []KubeConfigUser{user},
 		CurrentContext: &defaultStr,
-		Preferences:    map[interface{}]interface{}{}, //default type in sdk parser, used to compare the struct in unit tests
+		Preferences:    map[interface{}]interface{}{}, // default type in sdk parser, used to compare the struct in unit tests
 	}
 
 	return kubeconfig, nil

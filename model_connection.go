@@ -60,11 +60,14 @@ func (c *ConnectionParameters) UnmarshalYAML(unmarshaller func(interface{}) erro
 	if err := unmarshaller(&temp); err != nil {
 		return fmt.Errorf("failed to JSON unmarshal data (%w)", err)
 	}
-	unserializedData, err := connectionParametersSchema.UnserializeType(temp)
+	unserializedData, err := connectionParametersSchema.UnserializeType(temp) //nolint:all
 	if err != nil {
 		return fmt.Errorf("failed to unserialize data (%w)", err)
 	}
-	c = &unserializedData
+	// This assignment has no effect!  We disable the linter's objection to it
+	// pending investigation.
+	// see https://github.com/arcalot/arcaflow-lib-kubernetes-go/issues/18
+	c = &unserializedData //nolint:all
 	return nil
 }
 
