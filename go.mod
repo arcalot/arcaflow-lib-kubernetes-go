@@ -7,7 +7,7 @@ toolchain go1.21.7
 require (
 	github.com/stretchr/testify v1.9.0
 	go.arcalot.io/lang v1.1.0
-	go.flow.arcalot.io/pluginsdk v0.12.3
+	go.flow.arcalot.io/pluginsdk v0.12.5
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.28.4
 	k8s.io/client-go v0.28.4
